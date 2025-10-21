@@ -1,5 +1,7 @@
+<img src="https://xulioze.com/img/extended-context-guide.jpg" alt="notes in a screen" />
+
 # 🤖 Extended Context
-### Knowledge and Memory Architecture for Building Software with AI
+**Knowledge and Memory Architecture for Building Software with AI. Agents also need to take notes!**
 
 Turn "vibe-coding" into traceable and scalable engineering.
 
