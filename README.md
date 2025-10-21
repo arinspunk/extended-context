@@ -1,4 +1,4 @@
-# Extended Context
+# 🤖 Extended Context
 ### Knowledge and Memory Architecture for Building Software with AI
 
 Turn "vibe-coding" into traceable and scalable engineering.
@@ -24,7 +24,7 @@ Turn "vibe-coding" into traceable and scalable engineering.
 
 **With Extended Context:**
 ```
-1. @analysis checkout.php     → Analyze existing code
+1. @analysis checkout.php      → Analyze existing code
 2. @solution invoicing         → Documented proposal  
 3. @backlog                    → 8 atomic tasks (2-4h each)
 4. @execute [1.1]              → Implement first task
@@ -37,7 +37,7 @@ Turn "vibe-coding" into traceable and scalable engineering.
 **Option A - Daily use (recommended):**
 ```bash
 cd your-project
-git clone https://github.com/your-org/extended-context.git temp
+git clone https://github.com/arinspunk/extended-context.git temp
 cp -r temp/{rules,memory} .cursor/
 rm -rf temp
 ```
@@ -45,7 +45,7 @@ rm -rf temp
 **Option B - Contributing to the project:**
 ```bash
 cd your-project  
-git clone https://github.com/your-org/extended-context.git .cursor
+git clone https://github.com/arinspunk/extended-context.git .cursor
 ```
 
 **Verify installation:**
@@ -71,8 +71,8 @@ LLMs have limited context windows (~200K tokens). Without structure:
 ```
 .cursor/
 ├── rules/          # Reusable knowledge (persists between projects)
-│   ├── experts/    # WordPress, React, Python... (alwaysApply: true)
-│   ├── guidelines/ # KISS, project constraints (alwaysApply: true)
+│   ├── experts/    # WordPress, React, Python… (alwaysApply: true)
+│   ├── guidelines/ # JS architecture, BEM, project constraints… (alwaysApply: true)
 │   └── utils/      # Invocable protocols (alwaysApply: false)
 └── memory/         # Temporary experience (this project, this feature)
     └── YYYYMMDD-VV-description.md
@@ -204,7 +204,7 @@ Test the workflow with a real file:
 
 ## Migration from v1
 
-This architecture is the evolution of the [v1 4-file system](https://xulioze.com/blog/guia-desarrollar-software-agentes.html). If you're coming from that system (`01-expert.md`, `02-analysis.md`, `03-plan.md`, `04-backlog.md`), here's the mapping to v2:
+This architecture is the evolution of the [v1 4-file system](https://xulioze.com/en/blog/guide-develop-software-agents.html). If you're coming from that system (`01-expert.md`, `02-analysis.md`, `03-plan.md`, `04-backlog.md`), here's the mapping to v2:
 
 **Mapping v1 → v2:**
 - `01-expert.md` → `rules/experts/{stack}.mdc` + `rules/guidelines/constraints-{project}.mdc`
@@ -290,17 +290,16 @@ MIT License - Use, modify, distribute freely.
 
 ## Credits
 
-Created by [Xúlio Zé](https://xulioze.com).
+Created by [Xúlio Zé](https://xulioze.com/en/cv.html).
 
 ---
 
 ## Support
 
-- 🐛 **Bugs:** [GitHub Issues](link)
-- 💬 **Discussion:** [GitHub Discussions](link)
-- 📧 **Email:** your@email.com
-- 🦋 **Twitter:** [@yourhandle](link)
+- 🐛 **Bugs:** [GitHub Issues](https://github.com/arinspunk/extended-context/issues)
+- 📧 **LinkedIn:** [Xúlio Zé](https://www.linkedin.com/in/xulioze/)
+- 🦋 **Bluesky:** [@xulio-ze.bsky.social](https://bsky.app/profile/xulio-ze.bsky.social)
 
 ---
 
-**⭐ If this system saves you time, leave a star to help other developers discover it.**
+**⭐ If this system saves you time, leave a star to help other developers discover it 😊**

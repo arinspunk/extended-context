@@ -4,8 +4,9 @@
 .LSOverride
 
 # IDE
-# Ignorar carpeta de configuración de VS Code
+# Ignorar carpeta de configuración de VS Code y Cursor
 .vscode/
+.cursor/
 
 # Logs
 *.log
@@ -16,4 +17,4 @@
 
 # Custom files
 README-ES.md
-docs/ARCHITECTURE.md
+docs/ARCHITECTURE-ES.md
