@@ -1,0 +1,160 @@
+---
+alwaysApply: false
+---
+# UE-Web Project Guidelines
+
+Universidad Europea technical constraints. **Extends:** `frontend.mdc`
+
+## Locked Stack
+**Backend:** Django 2.x + Wagtail  
+**Build:** Webpack 4.x + Babel 7  
+**Styling:** Bootstrap 4.x (NOT v5), Sass/SCSS  
+**Scripts:** ES6+ + jQuery 3.x (legacy required)  
+**Libs:** Swiper, Embla Carousel, Masonry, Popper.js
+
+⚠️ **DO NOT suggest:** Webpack 5, Bootstrap 5, removing jQuery
+
+## File Structure
+```
+app/statics/
+├── scss/
+│   ├── base/        # _variables, _mixins, _elements
+│   ├── modules/     # _[##]_[name].scss (numbered)
+│   └── templates/   # styles, landings, catalogue_*
+├── js/
+│   ├── main.js      # entry point
+│   ├── modules/     # [##]_[name].js (numbered)
+│   └── utils/       # 00_helpers.js (shared)
+```
+
+**Numbering:** `_##_name` mandatory. Check conflicts before adding.
+
+## Multi-Brand System
+
+### Variables
+```scss
+// Brands
+$red-main: #FF3228;              // Universidad Europea
+$blue-realmadrid: #2D41B4;       // Real Madrid
+$iade-fucsia: #FF0988;           // IADE
+$fundesem-azul: #0066CC;         // FUNDESEM
+$sanitas-verde: #00A69C;         // Sanitas
+
+// Breakpoints (LOCKED)
+$mobile: 767px;
+$tablet-horizontal: 1269px;
+$br-desktop: 1270px;
+
+// Context classes
+.rmadrid { /* RM */ }
+.iades { /* IADE */ }
+.fundesem { /* FUNDESEM */ }
+.sanitas { /* Sanitas */ }
+```
+
+### SCSS Module
+```scss
+.module-name {
+  @extend %module-spacing;
+  
+  &__container { max-width: 1200px; }
+  
+  @media screen and (max-width: $tablet-horizontal) {
+    padding: 32px 16px;
+  }
+  
+  // Multi-brand (REQUIRED)
+  .rmadrid & { color: $blue-realmadrid; }
+  .iades & { color: $iade-fucsia; }
+  .fundesem & { color: $fundesem-azul; }
+  .sanitas & { color: $sanitas-verde; }
+}
+```
+
+### JS Module
+```javascript
+import { isMobile } from '../utils/00_helpers.js';
+
+class ModuleName {
+  constructor(element) {
+    this.element = element;
+    this.isMobile = isMobile();
+    this.init();
+    this.bindResize();
+  }
+  
+  init() {
+    this.isMobile ? this.initMobile() : this.initDesktop();
+  }
+  
+  bindResize() {
+    let timer;
+    window.addEventListener('resize', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        const current = isMobile();
+        if (current !== this.isMobile) {
+          this.isMobile = current;
+          this.destroy();
+          this.init();
+        }
+      }, 250);
+    });
+  }
+  
+  initMobile() { /* mobile */ }
+  initDesktop() { /* desktop */ }
+  destroy() { /* cleanup */ }
+}
+
+export default ModuleName;
+
+// jQuery wrapper if needed
+$(document).ready(() => {
+  $('.module-name').each((i, el) => new ModuleName(el));
+});
+```
+
+### Device Detection (`00_helpers.js`)
+```javascript
+const BREAKPOINT = 1270;
+
+export const isMobile = () => window.innerWidth < BREAKPOINT;
+export const isTablet = () => window.innerWidth >= 768 && window.innerWidth < BREAKPOINT;
+export const isDesktop = () => window.innerWidth >= BREAKPOINT;
+```
+
+## Django Integration
+```django
+{% load render_bundle from webpack_loader %}
+{% render_bundle 'ue_commons' 'css' 'DEFAULT' %}
+{% render_bundle 'ue_commons' 'js' 'DEFAULT' %}
+```
+
+## Mandatory Rules
+
+### ✅ Always
+1. Use numbering system - check conflicts
+2. Test across 5 brands (UE, IADE, Real Madrid, FUNDESEM, Sanitas)
+3. Import device detection from `00_helpers.js`
+4. Maintain jQuery compatibility for legacy
+5. Extend `%module-spacing` for vertical rhythm
+
+### ❌ Never
+1. Modify `_00_uikit.scss` without approval
+2. Break multi-brand theming selectors
+3. Hardcode breakpoint values
+4. Reimplement device detection helpers
+
+## Testing Checklist
+- [ ] Mobile (< 768px), Tablet (768-1269px), Desktop (≥ 1270px)
+- [ ] All 5 brands render correctly
+- [ ] No console errors (IE11, Chrome, Firefox, Safari)
+- [ ] Django `{% render_bundle %}` syntax correct
+- [ ] SCSS follows `_##_name` convention
+- [ ] JS uses `00_helpers.js` for breakpoints
+
+## Context
+Educational institution: SEO-critical, Schema.org markup, multi-language (ES/EN)
+
+**Philosophy:** Stability > Innovation. Test exhaustively across brands.

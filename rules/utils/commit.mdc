@@ -1,0 +1,88 @@
+---
+alwaysApply: false
+---
+# Commit Protocol
+Generate commit message from staged changes → user approves → execute commit → update backlog
+
+## Input Formats
+- `commit [JIRA-123]` → With ticket prefix
+- `commit` → Without ticket
+- `commit wip` → Work in progress
+- `commit amend` → Amend last commit
+
+## Message Rules
+**Structure:**
+```
+[JIRA-XXX] type(scope): subject
+
+- Detailed change 1
+- Detailed change 2
+```
+
+**Types:** feat, fix, refactor, docs, style, test, chore, perf  
+**Language:** Always English  
+**Subject:** Imperative mood, max 72 chars, no period  
+**Scope:** Lowercase module/feature name
+
+## Process
+1. Run `git diff --staged --name-only` to list staged files
+2. Analyze changes with `git diff --staged`
+3. Generate conventional commit message
+4. Present message WITH staged files list, wait for approval
+5. On approval: `git commit -m "..."`
+6. Get hash: `git log -1 --format=%h`
+7. Update ALL backlog tasks matching staged files
+8. Confirm with updated task list
+
+## Backlog Matching Rules
+**Update tasks (✅) using ANY criteria:**
+
+1. **Direct reference:** Task mentions file in "Code location", "Files", or "What to do"
+2. **File type match:** Task functionality aligns with file type/extension
+3. **Keyword match:** Task description keywords match committed code functionality
+
+**Matching Examples:**
+- Task mentions `auth.ts` + `auth.ts` committed = MATCH (direct)
+- Task "Add authentication" + `auth.ts` committed = MATCH (keyword)
+- Task "Fix login validation" + `validateLogin.js` committed = MATCH (keyword + type)
+- Task "Update API docs" + `README.md` committed = MATCH (type)
+
+## Output Format
+```
+📝 Proposed Commit Message:
+────────────────────────────────
+[message here]
+────────────────────────────────
+
+Staged files:
+• path/to/file1.ext
+• path/to/file2.ext
+
+Approve: "yes" / "ok" / "commit"
+Adjust: "change [feedback]"
+Cancel: "cancel"
+```
+
+## After Approval
+```
+✅ Committed `abc1234`
+📝 Backlog updated
+
+Updated tasks:
+- [1.1] Task Title (direct: file mentioned)
+- [2.1] Another Task (type: source file → feature task)
+- [3.2] Third Task (keyword: "authentication")
+
+Staged files:
+• path/to/file1.ext
+• path/to/file2.ext
+```
+
+## Backlog Format
+```markdown
+**[X.Y]** ✅ Task Title
+> **What to do:** [description]
+> **Date completed:** YYYY-MM-DD
+> **Work done:** [actions taken]
+> **Commit:** `hash` [JIRA-XXX] type(scope): subject
+```

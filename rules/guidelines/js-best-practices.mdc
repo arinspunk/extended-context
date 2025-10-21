@@ -1,0 +1,130 @@
+---
+alwaysApply: false
+---
+# JavaScript Best Practices
+
+Modern vanilla JS clean code rules.
+
+## ALWAYS
+- `const` by default, `let` for reassignment
+- Arrow functions for callbacks
+- `async/await` over Promise chains
+- Destructuring for clarity
+- Optional chaining (`?.`) for nested access
+- Template literals for interpolation
+- ES6 modules (`import/export`)
+- Early returns (reduce nesting)
+- JSDoc for public APIs
+- Event delegation vs multiple listeners
+
+## NEVER
+- `var` in new code
+- Modify native prototypes
+- Global variables
+- Callback hell
+- Argument mutation
+
+## Modern Syntax
+
+```js
+// Variables & functions
+const API = '/api';
+let page = 1;
+const map = items => items.map(i => i.id);
+
+// Destructuring
+const { id, name } = user;
+const [first, ...rest] = array;
+
+// Spread/rest
+const merged = { ...obj1, updated: true };
+const all = [...arr1, ...arr2];
+
+// Nullish coalescing
+const count = items?.length ?? 0;
+```
+
+## Async Patterns
+
+```js
+async function load(id) {
+  try {
+    const res = await fetch(`/api/${id}`);
+    return await res.json();
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+// Parallel execution
+const [users, posts] = await Promise.all([
+  fetch('/users').then(r => r.json()),
+  fetch('/posts').then(r => r.json())
+]);
+```
+
+## DOM
+
+```js
+// Selection
+const el = document.querySelector('.class');
+const all = document.querySelectorAll('.items');
+
+// Classes
+el.classList.add('active');
+el.classList.toggle('hidden');
+
+// Datasets
+el.dataset.userId = '123';
+const id = el.dataset.userId;
+
+// Templates
+const html = `<div class="card"><h2>${data.title}</h2></div>`;
+```
+
+## Array/Object Methods
+
+```js
+const active = users.filter(u => u.active);
+const ids = users.map(u => u.id);
+const total = prices.reduce((sum, p) => sum + p, 0);
+const found = users.find(u => u.id === 5);
+const exists = users.some(u => u.active);
+
+const keys = Object.keys(obj);
+const entries = Object.entries(obj);
+const merged = Object.assign({}, obj1, obj2);
+```
+
+## Performance
+
+```js
+// Debounce
+const debounce = (fn, ms) => {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), ms);
+  };
+};
+
+// Event delegation
+container.addEventListener('click', e => {
+  if (e.target.matches('.btn')) handle(e.target);
+});
+
+// Intersection Observer
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) load(e.target);
+  });
+});
+```
+
+## Core Principles
+1. **Immutability** → Create new objects
+2. **Pure functions** → No side effects
+3. **Single responsibility** → One purpose per function
+4. **Descriptive names** → `getUserById` not `get`
+5. **Fail fast** → Validate early

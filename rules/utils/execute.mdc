@@ -1,0 +1,46 @@
+---
+alwaysApply: false
+---
+# Task Execution Protocol
+Execute backlog tasks → update after each → stop at boundaries
+
+## Input Formats
+- Task: `[1.1]` or `[2.3], [2.4], [2.5]`
+- Phase: `Phase 2` or `Phase 2 and 3`
+- All: `complete backlog` / `all`
+- Continue: `continue` / `next`
+
+## Execution Flow
+1. Load backlog from .cursor/memory/ (`YYYYMMDD-VV-backlog-*.md`)
+2. Parse scope (task/phase/all)
+3. Check dependencies & blockers
+4. For each task:
+   - Read "What to do"
+   - Execute (apply KISS)
+   - Update: ⏳ → ✅, add date + "Work done"
+   - Recalc progress %
+   - Update backlog in .cursor/memory/
+5. Stop at boundary + report
+
+## Stop Conditions
+- Scope complete → STOP
+- Blocker (⚠️) → STOP + explain
+- Unclear → STOP + ask
+- User interrupt → STOP + save
+
+## Update Format
+Follow backlog template exactly:
+- "What to do:" (unchanged)
+- "Date completed:" YYYY-MM-DD
+- "Work done:" [detailed actions]
+- Status: ⏳ | 🔄 | ✅ | ⚠️
+
+## Completion Report
+```
+✅ Execution Complete
+Scope: [what executed]
+Tasks: X completed
+Progress: XX% → YY%
+Next: [Phase.Task#] [description]
+Backlog: @memory/[file].md
+```

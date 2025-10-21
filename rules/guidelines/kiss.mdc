@@ -1,0 +1,20 @@
+---
+alwaysApply: false
+---
+# KISS Principle (Keep It Simple, Stupid)
+
+Prioritize simplicity over complexity in all development.
+
+## Always Apply
+- **Code:** Direct solutions, avoid over-engineering
+- **Architecture:** Simple patterns, minimal dependencies
+- **Functions:** Single responsibility per function/method
+- **Naming:** Descriptive and clear variables/functions
+- **Logic:** Choose simplest working solution
+
+## Ask Before Complicating
+- Do I really need this abstraction?
+- Can it be done with fewer lines/files/dependencies?
+- Will another dev understand this in 6 months?
+
+**Golden Rule:** If you can't explain the solution in 2-3 sentences, it's too complex.

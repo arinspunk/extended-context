@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+# Ignorar carpeta de configuración de VS Code
+.vscode/
+
+# Logs
+*.log
+
+# Temporales
+*.tmp
+*.temp
+
+# Custom files
+README-ES.md
+docs/ARCHITECTURE.md

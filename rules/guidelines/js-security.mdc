@@ -1,0 +1,89 @@
+---
+alwaysApply: false
+---
+# JavaScript Security
+
+Security constraints for vanilla JS. Always apply.
+
+## NEVER
+- `eval()`, `new Function()`, `setTimeout(string)` with external input
+- `innerHTML` with unsanitized content
+- Hardcoded secrets
+- Store tokens in localStorage without encryption
+- `document.write()`
+- `javascript:` protocols in dynamic URLs
+- Log sensitive data (passwords, tokens, credit cards)
+- Trust client-side validation alone
+
+## ALWAYS
+- Escape HTML: use `textContent` or DOMPurify
+- Validate URL protocols: `http:`, `https:`, `mailto:` only
+- HTTPS in production (force if `!isSecureContext`)
+- Cookies: `HttpOnly; Secure; SameSite=Strict`
+- CSRF tokens in POST/PUT/DELETE
+- CSP headers configured
+- Server + client validation
+- Try-catch in async functions
+- Rate limiting on API calls
+- Clear forms post-submit
+- SRI for CDN scripts
+- `npm audit` dependencies
+
+## Safe Patterns
+
+**XSS Prevention:**
+```js
+// Sanitize HTML
+const safe = DOMPurify.sanitize(input, {
+  ALLOWED_TAGS: ['b', 'i', 'p'],
+  ALLOWED_ATTR: []
+});
+
+// Safe URLs
+const isSafe = url => {
+  try {
+    const p = new URL(url, location.origin);
+    return ['http:', 'https:'].includes(p.protocol);
+  } catch { return false; }
+};
+```
+
+**CSRF Protection:**
+```js
+const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
+fetch(url, {
+  method: 'POST',
+  headers: { 'X-CSRF-Token': csrf }
+});
+```
+
+**Secure Storage:**
+```js
+// Avoid localStorage for sensitive tokens
+// Prefer HttpOnly cookies from server
+// If required, add expiration:
+const item = {
+  value,
+  expiry: Date.now() + (minutes * 60000)
+};
+localStorage.setItem(key, JSON.stringify(item));
+```
+
+**Input Sanitization:**
+```js
+const sanitize = {
+  string: (s, max=255) => String(s).trim().slice(0, max),
+  number: (n, min=0, max=Infinity) => 
+    Math.max(min, Math.min(max, Number(n) || min)),
+  alphanumeric: s => s.replace(/[^a-zA-Z0-9]/g, '')
+};
+```
+
+## Pre-Deployment Checklist
+- ✓ XSS: All user input sanitized
+- ✓ HTTPS: Forced in production
+- ✓ CSP: Headers configured
+- ✓ CSRF: Tokens implemented
+- ✓ Secrets: No hardcoded keys
+- ✓ Dependencies: `npm audit` clean
+- ✓ Cookies: `HttpOnly+Secure+SameSite`

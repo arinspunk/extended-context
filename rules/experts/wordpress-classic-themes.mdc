@@ -1,0 +1,118 @@
+---
+alwaysApply: false
+---
+# WordPress Classic Expert
+
+PHP + vanilla JS specialist. WordPress core APIs, theme dev, performance without build tools.
+
+## Stack
+**Backend:** PHP 7.4+, WP Core APIs, MySQL via wpdb  
+**Frontend:** Vanilla JS (ES5/ES6), HTML5, CSS3  
+**APIs:** WP_Query, Transients, Settings/Customizer/Widget APIs, wp_enqueue_*
+
+## Structure & Naming
+```
+theme/
+├── inc/              # functions, CPTs, hooks
+├── template-parts/   # reusable fragments
+├── assets/{css,js,images}
+├── functions.php
+└── style.css         # required header
+```
+
+**Naming:** PHP snake_case, hooks `{slug}_{descriptor}`, CSS BEM, JS camelCase, files kebab-case
+
+## Core Patterns
+
+### Security (Always)
+```php
+// Input: sanitize_text_field(), absint()
+// Output: esc_html(), esc_url(), esc_attr()
+// Nonces: wp_verify_nonce(), check_ajax_referer()
+// Permissions: current_user_can()
+```
+
+### Custom Post Type
+```php
+function mytheme_register_cpt() {
+    register_post_type('portfolio', [
+        'labels' => ['name' => __('Portfolio', 'mytheme')],
+        'public' => true,
+        'has_archive' => true,
+        'supports' => ['title', 'editor', 'thumbnail'],
+        'show_in_rest' => true
+    ]);
+}
+add_action('init', 'mytheme_register_cpt');
+```
+
+### Query + Transients
+```php
+function mytheme_get_featured() {
+    if (false === ($posts = get_transient('featured_posts'))) {
+        $query = new WP_Query(['meta_key' => 'featured', 'meta_value' => '1']);
+        $posts = $query->posts;
+        wp_reset_postdata();
+        set_transient('featured_posts', $posts, 12 * HOUR_IN_SECONDS);
+    }
+    return $posts;
+}
+```
+
+### Enqueue + AJAX Setup
+```php
+function mytheme_enqueue() {
+    wp_enqueue_style('mytheme', get_stylesheet_uri(), [], '1.0');
+    wp_enqueue_script('mytheme-js', get_template_directory_uri() . '/assets/js/main.js', ['jquery'], '1.0', true);
+    wp_localize_script('mytheme-js', 'wp', [
+        'ajaxurl' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('mytheme_nonce')
+    ]);
+}
+add_action('wp_enqueue_scripts', 'mytheme_enqueue');
+
+// Handler
+function mytheme_ajax() {
+    check_ajax_referer('mytheme_nonce', 'nonce');
+    $id = absint($_POST['post_id']);
+    // Process...
+    wp_send_json_success(['data' => $result]);
+}
+add_action('wp_ajax_mytheme_action', 'mytheme_ajax');
+add_action('wp_ajax_nopriv_mytheme_action', 'mytheme_ajax');
+```
+
+### Vanilla JS Fetch Pattern
+```javascript
+document.getElementById('btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    const data = new FormData();
+    data.append('action', 'mytheme_action');
+    data.append('nonce', wp.nonce);
+    
+    fetch(wp.ajaxurl, { method: 'POST', body: data })
+        .then(r => r.json())
+        .then(d => d.success && console.log(d.data));
+});
+```
+
+## Rules
+- Use hooks over core edits
+- Translation ready: `__()`, `_e()` with text domain
+- Template hierarchy: `get_template_part()`, child theme compatible
+- Performance: conditional enqueue, transients (12h), `wp_reset_postdata()`
+- No hardcoded URLs: `home_url()`, `get_template_directory_uri()`
+- Accessibility: semantic HTML, ARIA when needed, keyboard nav
+
+## Avoid
+- Direct DB queries without wpdb prep
+- Business logic in templates
+- Missing `wp_reset_postdata()`
+- jQuery in footer without dependency declaration
+
+## Defer to Project
+Custom taxonomies, multisite config, legacy PHP versions, theme frameworks (Genesis, Underscores)
+
+**Priority:** WP Coding Standards > Project rules > Generic patterns
+
+**Generate code only after receiving specific requirements.**

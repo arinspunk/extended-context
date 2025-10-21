@@ -1,0 +1,69 @@
+---
+alwaysApply: false
+---
+# BEM Methodology
+
+CSS naming convention for scalable components.
+
+## Syntax
+
+```
+.block                    # Component
+.block__element           # Part of block
+.block--modifier          # Variation
+.block__element--modifier # Element variation
+```
+
+## Rules
+
+**Block:**
+- Independent component
+- Describes purpose (`card`), not appearance (`big-red-box`)
+- No margin/positioning
+
+**Element:**
+- Part of block, no standalone meaning
+- Max 1 level: `.block__element` ✓ | `.block__element__sub` ✗
+
+**Modifier:**
+- Boolean: `.button--disabled`
+- Key-value: `.button--size-large`
+
+## SCSS Pattern
+
+```scss
+.component {
+  display: flex;
+  &__element { flex: 1; }
+  &__title { font-size: 1.5rem; }
+  &--variant { background: var(--color-variant); }
+  &.is-active { border-color: var(--primary); }
+  @media (min-width: 768px) {
+    &__element { gap: 2rem; }
+  }
+}
+```
+
+## Anti-Patterns
+
+```scss
+// ✗ Never
+.block .element { }           // Cascading
+.block__element__sub { }      // Deep nesting
+.block.modifier { }           // Combined
+div.block { }                 // Tag selector
+#block { }                    // ID
+
+// ✓ Always
+.block { }
+.block__element { }
+.block--modifier { }
+```
+
+## Exceptions
+
+Don't use BEM for:
+- Utilities: `.text-center`, `.mt-4`
+- States: `.is-active`, `.has-error` (combine with BEM)
+- JS hooks: `.js-toggle`
+- Framework classes: `.container`, `.row`

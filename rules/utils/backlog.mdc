@@ -1,0 +1,37 @@
+---
+alwaysApply: false
+---
+# Backlog Protocol (Context Recovery)
+From approved solution → break into atomic tasks → create persistent backlog
+- Save to @memory as `YYYYMMDD-VV-backlog-description.md`
+- VV = daily sequence (01, 02...). VV increments sequentially per day (never reuse VV values)
+- Purpose: Resume work across chat sessions by tracking completed/pending work
+
+## Template Structure
+
+### Header
+- Project name & objective summary
+- Generation date & source solution reference
+
+### Task Format (per item)
+**[Phase.Task#]** ⏳/🔄/✅/⚠️ Task Title
+> **What to do:** [Clear description from solution plan - what needs to be accomplished]
+> **Date completed:** [YYYY-MM-DD or "-"]
+> **Work done:** [Specific actions taken or "-"]
+
+### Task Breakdown Rules
+- Atomic: 2-4 hours max per task
+- Sequential: Number shows execution order
+- Traceable: Link back to solution document
+- Testable: Clear completion criteria
+
+### Progress Tracking
+- Legend: ⏳ Pending | 🔄 In Progress | ✅ Done | ⚠️ Blocked
+- Phase-level grouping (logical work segments)
+- Summary: Total tasks, completed count, % progress
+- Dependencies section: Critical path & blockers
+
+### Context Preservation
+- Attach URLs/files referenced in work
+- Document decisions made during execution
+- Note deviations from original plan

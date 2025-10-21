@@ -1,0 +1,16 @@
+---
+alwaysApply: false
+---
+# Analysis Protocol
+
+**Trigger:** @file/@folder without instructions, or "analyze/review/audit/document"
+
+**Process:**
+1. Acknowledge: "Analyzing [name] → saving to `.cursor/memory/`"
+2. Analyze: purpose, architecture, dependencies, issues, recommendations
+3. **MUST save** to `.cursor/memory/YYYYMMDD-VV-description.md` (VV = daily 01,02...). VV increments sequentially per day (never reuse VV values)
+4. Confirm: "Analysis saved to `.cursor/memory/[filename]`"
+
+**File content:** Natural markdown with findings - no strict template, focus on what matters for future reference.
+
+**Rules:** NEVER skip save. ASK if scope unclear. DO NOT WRITE CODE YET, wait for further instructions

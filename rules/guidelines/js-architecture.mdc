@@ -1,0 +1,209 @@
+---
+alwaysApply: false
+---
+# JavaScript Architecture & Patterns
+
+Clean, scalable vanilla JS without frameworks.
+
+## Project Structure
+```
+src/
+├── components/  # UI/DOM logic
+├── services/    # Business logic/API
+├── utils/       # Pure functions
+├── state/       # State management
+└── config/      # Constants
+```
+
+## Core Patterns
+
+### Module (Encapsulation)
+```js
+const Cart = (() => {
+  let items = [];
+  return {
+    add: item => items.push(item),
+    total: () => items.reduce((s,i) => s + i.price, 0)
+  };
+})();
+```
+
+### Factory (Creation)
+```js
+const create = {
+  button: (type, text, fn) => {
+    const btn = document.createElement('button');
+    btn.className = `btn-${type}`;
+    btn.textContent = text;
+    btn.onclick = fn;
+    return btn;
+  }
+};
+```
+
+### Observer (Pub/Sub)
+```js
+class Events {
+  constructor() { this.events = {}; }
+  on(e, cb) {
+    (this.events[e] ??= []).push(cb);
+    return () => this.off(e, cb);
+  }
+  off(e, cb) {
+    this.events[e] = this.events[e]?.filter(c => c !== cb);
+  }
+  emit(e, data) { this.events[e]?.forEach(cb => cb(data)); }
+}
+```
+
+## Separation of Concerns
+
+**Service Layer:**
+```js
+export class UserService {
+  constructor(api) { this.api = api; }
+  async get(id) { return this.api.get(`/users/${id}`); }
+  async update(id, data) { return this.api.put(`/users/${id}`, data); }
+}
+```
+
+**Component Layer:**
+```js
+export class Card {
+  constructor(el, service) {
+    this.el = el;
+    this.service = service;
+    this.bind();
+  }
+  async render(id) {
+    const data = await this.service.get(id);
+    this.el.innerHTML = this.template(data);
+  }
+  template(d) { return `<div>${d.name}</div>`; }
+  bind() { this.el.onclick = e => this.handle(e); }
+}
+```
+
+**Utility Layer:**
+```js
+export const format = (date, locale='en') => 
+  new Intl.DateTimeFormat(locale).format(new Date(date));
+```
+
+## Dependency Injection
+
+```js
+// ❌ Avoid
+class Controller {
+  constructor() { this.api = new API(); }
+}
+
+// ✅ Prefer
+class Controller {
+  constructor(api, logger) {
+    this.api = api;
+    this.logger = logger;
+  }
+}
+```
+
+## State Management
+
+```js
+class Store {
+  constructor(state = {}) {
+    this.state = state;
+    this.listeners = [];
+  }
+  get() { return { ...this.state }; }
+  set(updates) {
+    this.state = { ...this.state, ...updates };
+    this.listeners.forEach(l => l(this.state));
+  }
+  subscribe(fn) {
+    this.listeners.push(fn);
+    return () => this.listeners = this.listeners.filter(l => l !== fn);
+  }
+}
+```
+
+## Error Handling
+
+```js
+class ApiError extends Error {
+  constructor(msg, code, endpoint) {
+    super(msg);
+    this.name = 'ApiError';
+    this.code = code;
+    this.endpoint = endpoint;
+  }
+}
+
+class ErrorHandler {
+  handle(e) {
+    if (e instanceof ApiError) {
+      console.error(`API ${e.code}: ${e.message}`);
+      if (e.code === 401) redirect('/login');
+    } else console.error('Unknown error:', e);
+  }
+}
+```
+
+## Composition Over Inheritance
+
+```js
+// ❌ Deep inheritance chains
+class Animal {}
+class Mammal extends Animal {}
+class Dog extends Mammal {}
+
+// ✅ Mixins
+const canEat = state => ({
+  eat: food => state.energy += food.cal
+});
+const canWalk = state => ({
+  walk: d => state.pos += d
+});
+
+const createDog = name => {
+  const state = { name, energy: 100, pos: 0 };
+  return Object.assign({}, canEat(state), canWalk(state));
+};
+```
+
+## SOLID Principles
+
+**Single Responsibility:**
+```js
+// Each class has one reason to change
+class User {}
+class UserRepo { save(u) {} }
+class EmailService { send(to, msg) {} }
+```
+
+**Open/Closed:**
+```js
+// Extend via strategies, not modification
+class Processor {
+  constructor(strategy) { this.strategy = strategy; }
+  process(data) { return this.strategy.process(data); }
+}
+```
+
+**Dependency Inversion:**
+```js
+// Depend on abstractions
+class Service {
+  constructor(notifier) { // Must implement send()
+    this.notifier = notifier;
+  }
+}
+```
+
+## Apply These Principles
+
+1. **DRY** → Extract repeated logic
+2. **YAGNI** → No speculative features
+3. **KISS** → Simplest working solution
+4. **Fail Fast** → Validate inputs early
+5. **Immutability** → Return new objects

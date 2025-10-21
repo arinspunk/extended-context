@@ -1,0 +1,155 @@
+---
+alwaysApply: false
+---
+# HTML & Accessibility
+
+Semantic HTML and WCAG 2.1 AA compliance.
+
+## NEVER
+
+- `<div>`/`<span>` when semantic elements exist
+- Skip heading levels (h1 → h3)
+- `<br>` for spacing (use CSS)
+- Tables for layout
+- Omit `alt` on images
+- `placeholder` as label
+- Color alone for information
+- `<a>` for actions | `<button>` for navigation
+
+## ALWAYS
+
+- Semantic HTML5 elements first
+- `lang` attribute on `<html>`
+- Text alternatives for non-text content
+- 4.5:1 contrast ratio minimum
+- Keyboard navigation support
+- ARIA only when semantic HTML insufficient
+
+## Structure
+
+```html
+<header>
+  <nav aria-label="Main">
+    <ul><li><a href="/">Home</a></li></ul>
+  </nav>
+</header>
+
+<main>
+  <article>
+    <h1>Title</h1>
+    <section>
+      <h2>Section</h2>
+      <p>Content</p>
+    </section>
+  </article>
+</main>
+
+<aside aria-label="Related"><!-- Sidebar --></aside>
+<footer><!-- Footer --></footer>
+```
+
+## Forms
+
+```html
+<!-- ✓ Label association -->
+<label for="email">Email</label>
+<input type="email" id="email" required aria-describedby="hint">
+<small id="hint">Required field</small>
+
+<!-- ✓ Error state -->
+<input aria-invalid="true" aria-describedby="error">
+<span id="error" role="alert">Invalid format</span>
+
+<!-- ✓ Grouping -->
+<fieldset>
+  <legend>Address</legend>
+  <label for="street">Street</label>
+  <input id="street">
+</fieldset>
+```
+
+## Images
+
+```html
+<!-- Informative -->
+<img src="chart.png" alt="Sales up 40% in Q4">
+
+<!-- Decorative -->
+<img src="decor.png" alt="" role="presentation">
+
+<!-- Complex -->
+<figure>
+  <img src="data.png" alt="Climate data">
+  <figcaption>Detailed: Temps rose 1.2°C...</figcaption>
+</figure>
+```
+
+## Interactive
+
+```html
+<!-- Buttons (actions) -->
+<button type="button" onclick="save()">Save</button>
+
+<!-- Links (navigation) -->
+<a href="/about">About</a>
+
+<!-- Custom -->
+<div role="button" tabindex="0" 
+     onclick="toggle()" onkeypress="handleKey(event)">
+  Menu
+</div>
+
+<!-- Skip link -->
+<a href="#main" class="skip-link">Skip to content</a>
+```
+
+## ARIA (When Needed)
+
+```html
+<!-- Live regions -->
+<div role="status" aria-live="polite">Saved</div>
+
+<!-- Modal -->
+<div role="dialog" aria-labelledby="title" aria-modal="true">
+  <h2 id="title">Confirm</h2>
+</div>
+
+<!-- Expandable -->
+<button aria-expanded="false" aria-controls="menu">Menu</button>
+<ul id="menu" hidden>...</ul>
+```
+
+## Keyboard Support
+
+```javascript
+// Handle click + keyboard
+element.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    handleAction();
+  }
+});
+```
+
+## Contrast
+
+```css
+/* Normal text: 4.5:1 */
+color: #595959; /* on white */
+
+/* Large text (18pt+): 3:1 */
+color: #767676; /* on white */
+
+/* Never color alone */
+.error::before { content: "⚠ "; }
+```
+
+## Checklist
+
+- [ ] Images have `alt`
+- [ ] Heading hierarchy logical
+- [ ] Forms have labels
+- [ ] Keyboard accessible
+- [ ] Contrast ≥ 4.5:1
+- [ ] `lang` attribute set
+- [ ] Skip links present
+- [ ] Screen reader tested
