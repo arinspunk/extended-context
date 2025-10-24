@@ -5,7 +5,7 @@ alwaysApply: false
 Generate commit message from staged changes → user approves → execute commit → update backlog
 
 ## Input Formats
-- `commit [JIRA-123]` → With ticket prefix
+- `commit {JIRA-XXX}` → With ticket prefix
 - `commit` → Without ticket
 - `commit wip` → Work in progress
 - `commit amend` → Amend last commit
@@ -13,7 +13,7 @@ Generate commit message from staged changes → user approves → execute commit
 ## Message Rules
 **Structure:**
 ```
-[JIRA-XXX] type(scope): subject
+JIRA-XXX type(scope): subject
 
 - Detailed change 1
 - Detailed change 2

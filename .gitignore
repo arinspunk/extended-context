@@ -4,14 +4,14 @@
 .LSOverride
 
 # IDE
-# Ignorar carpeta de configuración de VS Code y Cursor
+# Ignore configuration folders for VS Code and Cursor
 .vscode/
 .cursor/
 
 # Logs
 *.log
 
-# Temporales
+# Temporary files
 *.tmp
 *.temp
 
